@@ -90,9 +90,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'foodbot'),
-        'USER': os.getenv('POSTGRES_USER', 'user'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  # ✅ Must match service name in docker-compose.yml
+        'USER': os.getenv('POSTGRES_USER', 'foodbotadmin'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'SuperStrongP@ssw0rd!'),
+        'HOST': os.getenv('POSTGRES_HOST', 'foodbot-db-server.postgres.database.azure.com'), 
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
