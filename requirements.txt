@@ -1,0 +1,6 @@
+Django>=4.2
+gunicorn
+psycopg2-binary
+djangorestframework
+python-dotenv
+openai
