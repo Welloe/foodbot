@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'foodbot'),
         'USER': os.getenv('POSTGRES_USER', 'user'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'password'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),  # ✅ Must match service name in docker-compose.yml
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),  # ✅ Must match service name in docker-compose.yml
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
