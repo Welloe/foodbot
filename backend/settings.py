@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'foodbot'),
         'USER': os.getenv('POSTGRES_USER', 'foodbotadmin'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'SuperStrongP@ssw0rd!'),
-        'HOST': os.getenv('POSTGRES_HOST', 'foodbot-db-server.postgres.database.azure.com'), 
+        'HOST': os.getenv('POSTGRES_HOST', 'foodbot-db-server.database.windows.net'), 
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
