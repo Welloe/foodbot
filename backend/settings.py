@@ -28,7 +28,10 @@ SECRET_KEY = 'django-insecure-o)c1%hms*$ya)630sse&0w5pxpnwb^6odbtpd8s_eu*_b1$e*u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "*",
+    'foodbot-app-hcd0d3cza6akarek.westeurope-01.azurewebsites.net',
+]
 
 
 # Application definition
@@ -53,6 +56,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://foodbot-app-hcd0d3cza6akarek.westeurope-01.azurewebsites.net'
 ]
 
 REST_FRAMEWORK = {
