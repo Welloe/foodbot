@@ -17,9 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from chatbot.views import home, simulate_chats_page, simulate_chats_stream, vegetarian_responses_view
 
 urlpatterns = [
-    path('', lambda request: HttpResponse("Hello from FoodBot!")),
+    path('', home, name='home'),
+    path('simulate-chats/', simulate_chats_page, name='simulate_chats'),
+    path('simulate-chats-stream/', simulate_chats_stream, name='simulate_chats_stream'),
     path("admin/", admin.site.urls),
+    path("vegetarians/", vegetarian_responses_view, name="vegetarians"),
     path("api/", include("chatbot.urls")),
 ]

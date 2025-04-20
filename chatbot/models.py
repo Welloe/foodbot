@@ -8,3 +8,7 @@ class ChatResponse(models.Model):
 
     def __str__(self):
         return f"[{self.role}] {self.message[:30]}..."
+
+class BlacklistedKeyword(models.Model):
+    keyword = models.CharField(max_length=100, unique=True)
+    added_at = models.DateTimeField(auto_now_add=True)

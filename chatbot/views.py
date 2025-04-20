@@ -9,6 +9,12 @@ from .serializers import ChatResponseSerializer
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BasicAuthentication
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+from chatbot.utils import simulate_gpt_chats
+from django.contrib import messages
+from django.http import StreamingHttpResponse
+import time
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -59,3 +65,38 @@ def vegetarian_responses(request):
     queryset = ChatResponse.objects.filter(role='B', is_vegetarian_or_vegan=True)
     serializer = ChatResponseSerializer(queryset, many=True)
     return Response(serializer.data)
+
+def home(request):
+    return render(request, "home.html")
+
+def simulate_chats_page(request):
+    return render(request, 'simulate_chats.html')
+
+
+def simulate_chats_stream(request):
+    if not request.user.is_superuser:
+        return StreamingHttpResponse("Access denied.", content_type="text/plain")
+
+    def event_stream():
+        ChatResponse.objects.all().delete()
+        yield "data: 🌀 Starting simulation...<br>\n\n"
+        for i, msg in enumerate(simulate_gpt_chats(100, stream=True), 1):
+            safe_msg = msg.replace("\n", "<br>")
+            yield f"data: {i:03d}/100 → {safe_msg}<br>\n\n"
+            time.sleep(0.05)
+        # ✅ Self-learning logic after simulating
+        yield "data: 🧠 Analyzing non-veggie responses...<br>\n\n"
+        from chatbot.utils import self_learn_from_non_veg_responses
+        keywords = self_learn_from_non_veg_responses()
+        if keywords:
+            for word in keywords:
+                yield f"data: ➕ Learned new keyword: <b>{word}</b><br>\n\n"
+        else:
+            yield "data: ✅ No new keywords learned.<br>\n\n"
+        yield "data: ✅ Done! Returning to homepage...<br>\n\n"
+
+    return StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+
+def vegetarian_responses_view(request):
+    responses = ChatResponse.objects.filter(is_vegetarian_or_vegan=True).order_by("-created_at")
+    return render(request, "vegetarians.html", {"responses": responses})

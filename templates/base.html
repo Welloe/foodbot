@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FoodBot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-indigo-600">FoodBot</h1>
+            <div class="flex space-x-6 text-sm font-medium">
+                <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600">🏠 Home</a>
+                <a href="{% url 'vegetarians' %}" class="text-gray-700 hover:text-indigo-600">🥦 Vegetarians</a>
+                <a href="{% url 'simulate_chats' %}" class="text-gray-700 hover:text-indigo-600">🎲 Simulate Chats</a>
+                {% if request.user.is_superuser %}
+                    <a href="/admin/" class="text-gray-700 hover:text-indigo-600">🛠 Admin</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+  <!-- Page Content -->
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>

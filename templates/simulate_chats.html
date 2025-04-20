@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulating Chats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white px-6 py-8 font-mono">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-bold text-indigo-400 mb-6">🎲 Simulating 100 Conversations...</h1>
+    <div id="log" class="bg-gray-800 p-4 rounded-lg h-[30rem] overflow-y-auto text-sm border border-indigo-500 shadow-lg"></div>
+  </div>
+
+  <script>
+    const logEl = document.getElementById("log");
+    const eventSource = new EventSource("/simulate-chats-stream/");
+
+    eventSource.onmessage = function(event) {
+      const msg = event.data;
+      logEl.innerHTML += msg + "<br>";
+      logEl.scrollTop = logEl.scrollHeight;
+      if (msg.includes("✅ Done")) {
+        eventSource.close();
+        setTimeout(() => window.location.href = "/", 3000);
+      }
+    };
+  </script>
+</body>
+</html>
