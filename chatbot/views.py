@@ -16,7 +16,8 @@ from django.contrib import messages
 from django.http import StreamingHttpResponse
 import time
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
 
 @api_view(['POST'])
 def chat(request):

@@ -4,7 +4,8 @@ from django.utils import timezone
 from chatbot.models import ChatResponse,BlacklistedKeyword
 
 def simulate_gpt_chats(n=100, stream=False):
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+    client = OpenAI()
 
     def is_vegetarian_or_vegan(text):
         base_keywords = [
