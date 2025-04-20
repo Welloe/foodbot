@@ -18,9 +18,20 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
 from chatbot.views import home, simulate_chats_page, simulate_chats_stream, vegetarian_responses_view
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', home, name='home'),
+    path(
+        "login/",
+        auth_views.LoginView.as_view(
+            template_name="login.html",
+            redirect_authenticated_user=True,
+            next_page="/"  # 👈 This ensures redirection to home
+        ),
+        name="login"
+    ),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path('simulate-chats/', simulate_chats_page, name='simulate_chats'),
     path('simulate-chats-stream/', simulate_chats_stream, name='simulate_chats_stream'),
     path("admin/", admin.site.urls),

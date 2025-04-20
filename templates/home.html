@@ -6,7 +6,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
-
+    {% if messages %}
+    <div class="fixed top-6 right-6 z-50">
+      {% for message in messages %}
+        <div class="mb-2 px-4 py-3 rounded-lg shadow-lg text-white
+                    {% if message.tags == 'error' %}
+                        bg-red-500
+                    {% elif message.tags == 'success' %}
+                        bg-green-500
+                    {% else %}
+                        bg-indigo-500
+                    {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     <!-- Navbar -->
     <nav class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -18,6 +33,12 @@
                 {% if request.user.is_superuser %}
                     <a href="/admin/" class="text-gray-700 hover:text-indigo-600">🛠 Admin</a>
                 {% endif %}
+                {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'logout' %}" class="inline">
+                  {% csrf_token %}
+                  <button type="submit" class="text-gray-700 hover:text-indigo-600">🚪 Logout</button>
+                </form>
+              {% endif %}
             </div>
         </div>
     </nav>

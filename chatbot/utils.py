@@ -50,7 +50,8 @@ def self_learn_from_non_veg_responses():
     new_keywords = []
 
     for response in flagged:
-        prompt = (
+        # Step 1: Extract potentially non-veg/vegan words
+        extraction_prompt = (
             "You are an expert on vegetarian diets. From the following food description, "
             "extract all ingredients or words that are NOT vegetarian or vegan friendly:\n\n"
             f'"{response.message}"\n\nReturn ONLY a comma-separated list of those words.'
@@ -59,13 +60,26 @@ def self_learn_from_non_veg_responses():
         try:
             result = client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
+                messages=[{"role": "user", "content": extraction_prompt}],
                 temperature=0.3
             )
 
             words = result.choices[0].message.content.strip().lower().split(",")
+
             for word in map(str.strip, words):
-                if word and not BlacklistedKeyword.objects.filter(keyword=word).exists():
+                if not word or BlacklistedKeyword.objects.filter(keyword=word).exists():
+                    continue
+
+                # Step 2: Verify word
+                verify_prompt = f"Is '{word}' vegetarian or vegan friendly? Reply only with Yes or No."
+                check = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": verify_prompt}],
+                    temperature=0
+                )
+                answer = check.choices[0].message.content.strip().lower()
+
+                if answer == "no":
                     BlacklistedKeyword.objects.create(keyword=word)
                     new_keywords.append(word)
 
@@ -73,5 +87,14 @@ def self_learn_from_non_veg_responses():
             print(f"❌ Error during OpenAI analysis: {e}")
             continue
 
+    # 🔁 Step 3: Recheck all messages marked vegetarian/vegan
+    if new_keywords:
+        all_blacklisted = list(BlacklistedKeyword.objects.values_list("keyword", flat=True))
+        for response in ChatResponse.objects.filter(is_vegetarian_or_vegan=True):
+            if any(word in response.message.lower() for word in all_blacklisted):
+                response.is_vegetarian_or_vegan = False
+                response.save()
+
     return new_keywords
+
 

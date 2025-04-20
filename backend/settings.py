@@ -33,6 +33,10 @@ ALLOWED_HOSTS = [
     'foodbot-app-hcd0d3cza6akarek.westeurope-01.azurewebsites.net',
 ]
 
+LOGOUT_REDIRECT_URL = '/'
+
+LOGIN_URL = "/login/"
+
 
 # Application definition
 

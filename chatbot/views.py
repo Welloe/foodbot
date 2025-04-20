@@ -10,10 +10,13 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from chatbot.utils import simulate_gpt_chats
 from django.contrib import messages
 from django.http import StreamingHttpResponse
+from django.contrib.auth.decorators import login_required
+from chatbot.decorators import superuser_required
+
 import time
 
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
@@ -70,14 +73,12 @@ def vegetarian_responses(request):
 def home(request):
     return render(request, "home.html")
 
+@superuser_required
 def simulate_chats_page(request):
     return render(request, 'simulate_chats.html')
 
-
+@superuser_required
 def simulate_chats_stream(request):
-    if not request.user.is_superuser:
-        return StreamingHttpResponse("Access denied.", content_type="text/plain")
-
     def event_stream():
         ChatResponse.objects.all().delete()
         yield "data: 🌀 Starting simulation...<br>\n\n"
@@ -85,7 +86,7 @@ def simulate_chats_stream(request):
             safe_msg = msg.replace("\n", "<br>")
             yield f"data: {i:03d}/100 → {safe_msg}<br>\n\n"
             time.sleep(0.05)
-        # ✅ Self-learning logic after simulating
+
         yield "data: 🧠 Analyzing non-veggie responses...<br>\n\n"
         from chatbot.utils import self_learn_from_non_veg_responses
         keywords = self_learn_from_non_veg_responses()
@@ -98,6 +99,7 @@ def simulate_chats_stream(request):
 
     return StreamingHttpResponse(event_stream(), content_type='text/event-stream')
 
+@login_required
 def vegetarian_responses_view(request):
     responses = ChatResponse.objects.filter(is_vegetarian_or_vegan=True).order_by("-created_at")
     return render(request, "vegetarians.html", {"responses": responses})
