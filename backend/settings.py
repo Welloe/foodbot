@@ -88,12 +88,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'foodbot'),
-        'USER': os.getenv('POSTGRES_USER', 'foodbotadmin'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'SuperStrongP@ssw0rd!'),
-        'HOST': os.getenv('POSTGRES_HOST', 'foodbot-db-server.database.windows.net'), 
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'ENGINE': 'mssql',
+        'NAME': 'foodbot',
+        'USER': 'foodbotadmin',
+        'PASSWORD': 'SuperStrongP@ssw0rd!',
+        'HOST': 'foodbot-db-server.database.windows.net',
+        'PORT': '1433',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+        },
     }
 }
 

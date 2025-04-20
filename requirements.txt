@@ -1,6 +1,8 @@
-Django>=4.2
-gunicorn
-psycopg2-binary
-djangorestframework
-python-dotenv
-openai
+asgiref==3.8.1
+Django==5.0.14
+djangorestframework==3.16.0
+mssql-django==1.5
+pyodbc==5.2.0
+python-dotenv==1.1.0
+pytz==2025.2
+sqlparse==0.5.3
