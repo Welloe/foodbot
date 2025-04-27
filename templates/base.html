@@ -16,7 +16,7 @@
                 <a href="{% url 'home' %}" class="text-gray-700 hover:text-indigo-600">🏠 Home</a>
                 <a href="{% url 'vegetarians' %}" class="text-gray-700 hover:text-indigo-600">🥦 Vegetarians</a>
                 <a href="{% url 'simulate_chats' %}" class="text-gray-700 hover:text-indigo-600">🎲 Simulate Chats</a>
-                {% if request.user.is_superuser %}
+                {% if request.user.is_staff %}
                     <a href="/admin/" class="text-gray-700 hover:text-indigo-600">🛠 Admin</a>
                 {% endif %}
                 {% if request.user.is_authenticated %}
